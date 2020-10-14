@@ -7,9 +7,9 @@ import Person from './Person/Person.js';
 const app = props => {
     const [personsState, setPersonsState] = useState({
         persons: [
-            { name: 'Max', age: 28 },
-            { name: 'kris', age: 5 },
-            { name: 'fawnze', age: 19 }
+            { id: '1', name: 'Max', age: 28 },
+            { id: '2', name: 'kris', age: 5 },
+            { id: '3', name: 'fawnze', age: 19 }
         ]
     });
     const [showPersons, setShowPersons] = useState(false);
@@ -19,6 +19,8 @@ const app = props => {
 
     console.log(typeof(setOtherState))
     const switchNameHandler = (newName) => {
+
+
 
         setPersonsState({
             persons: [
@@ -30,51 +32,87 @@ const app = props => {
         });
     };
 
-    const nameChangedHandler = (event) => {
+    const nameChangedHandler = (event, id) => {
+    	const personIndex = personsState.persons.findIndex(p => {
+    		return p.id === id;
+    	});
+
+
+    	const person = { ...personsState.persons[personIndex]}
+
+    	person.name = event.target.value;
+
+    	const persons = [...personsState.persons];
+    	persons[personIndex] = person;
+
+
         setPersonsState({
-            persons: [
-                { name: 'Max', age: 28 },
-                { name: event.target.value, age: 5 },
-                { name: 'fawnze', age: 19 }
-            ]
+            persons: persons
 
         });
+    }
+
+    const deletePersonHandler = (personIndex) => {
+    	// const persons = personsState.persons;
+    	const persons = [...personsState.persons]
+    	persons.splice(personIndex, 1);
+    	setPersonsState({persons: persons})
+
     }
 
     const togglePersonsHandler = () => setShowPersons(showPersons => !showPersons);
 
 
     const style = {
-        backgroundColor: 'white',
+        backgroundColor: 'green',
         font: 'inherit',
         border: '1px solid blue',
         padding: '8px',
         cursor: 'pointer'
     };
 
+    let persons = null;
+
+    if (showPersons) {
+    
+        persons = (
+            <div>
+                { 
+                	personsState.persons.map((person, index) => {
+                	return <Person 
+                	click={() => deletePersonHandler(index)}	
+                	name={person.name} 
+                	age={person.age} 
+                	key={person.id}
+                	changed={(event) => nameChangedHandler(event, person.id)}
+                	/>
+                })
+
+            }
+            </div>
+        );
+        style.backgroundColor = 'red';
+    };
+
+    let classes = [];
+    if (personsState.persons.length <= 2) {
+
+    	classes.push('red');
+    }
+    if (personsState.persons.length <= 1) {
+
+    	classes.push('bold');
+    }
     
     return (
         <div className="App">
 				<h1>Monika</h1>
+				<p className={classes.join(' ')}>werk pls</p>
 				<button 
-				style={style} 
-				onClick={togglePersonsHandler}>Switch em</button>
-        {(console.log("showPersons JSX", showPersons))}
-				{ 
-					showPersons ? <div>
-				<Person 
-				 name={personsState.persons[0].name} 
-				 age={personsState.persons[0].age} />
-				<Person 
-				 name={personsState.persons[1].name} 
-				 age={personsState.persons[1].age} 
-				 click={switchNameHandler.bind(this,'Fawns in person class')}
-				 changed={nameChangedHandler}>hobby</Person>
-				<Person name={personsState.persons[2].name} age={personsState.persons[2].age} />
-				</div> : <div></div> 
-			}
-			</div>
-        // return React.createElement('h1', null, 'h1', 'Hi, I\'m aReact App!!!');
+					style={style} 
+					onClick={togglePersonsHandler}>Switch em</button>
+					{persons}
+				</div>
     );
 
 };
