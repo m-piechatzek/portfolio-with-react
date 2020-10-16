@@ -2,6 +2,7 @@ import React, { useState } from "react";
 // Component now is useState
 import "./App.css";
 import Person from './Person/Person.js';
+// import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import styled from 'styled-components';
 
 const StyledButton = styled.button`
@@ -18,7 +19,7 @@ const StyledButton = styled.button`
 
 `;
 
-const app = props => {
+const App = props => {
     const [personsState, setPersonsState] = useState({
         persons: [
             { id: '1', name: 'Max', age: 28 },
@@ -138,4 +139,4 @@ const app = props => {
     );
 
 };
-export default app;
+export default App;
